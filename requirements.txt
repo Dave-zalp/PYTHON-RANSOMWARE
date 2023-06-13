@@ -1,0 +1,10 @@
+os
+time
+subprocess
+socket
+cryptography
+telegram
+requests
+datetime
+threading
+sys

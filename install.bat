@@ -1,0 +1,10 @@
+pip install os
+pip install time
+pip install subprocess
+pip install socket
+pip install cryptography
+pip install telegram
+pip install requests
+pip install datetime
+pip install threading
+pip install sys

